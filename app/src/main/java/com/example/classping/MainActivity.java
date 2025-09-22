@@ -17,6 +17,7 @@ import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, displayedSchedules);
         scheduleList.setAdapter(adapter);
 
-        // Map day names to button IDs
         dayButtons.put("SUNDAY", findViewById(R.id.btnSun));
         dayButtons.put("MONDAY", findViewById(R.id.btnMon));
         dayButtons.put("TUESDAY", findViewById(R.id.btnTue));
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         dayButtons.put("FRIDAY", findViewById(R.id.btnFri));
         dayButtons.put("SATURDAY", findViewById(R.id.btnSat));
 
-        // Day button click
         for (Map.Entry<String, Button> entry : dayButtons.entrySet()) {
             String day = entry.getKey();
             Button button = entry.getValue();
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // Default day
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         switch (dayOfWeek) {
@@ -170,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
                 currentCourse = courseMatcher.group(0);
             } else if (roomMatcher.find()) {
                 currentRoom = roomMatcher.group(0);
-                // Add entry once we have course and room
                 if (!currentCourse.isEmpty()) {
                     String entry = String.format("%s | %s [%s] (%s)", currentDay, currentCourse, currentProgram, currentRoom);
                     allSchedules.add(entry);
@@ -180,17 +177,11 @@ public class MainActivity extends AppCompatActivity {
                     currentProgram = "";
                 }
             } else {
-                currentProgram = line; // Program/description
+                currentProgram = line;
             }
         }
 
-        // Sort alphabetically
-        Collections.sort(allSchedules, new Comparator<String>() {
-            @Override
-            public int compare(String s1, String s2) {
-                return s1.compareTo(s2);
-            }
-        });
+        sortSchedulesByTime();
 
         if (allSchedules.isEmpty()) {
             Toast.makeText(this, "Could not parse schedule from text.", Toast.LENGTH_LONG).show();
@@ -223,18 +214,13 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Add", (dialog, id) -> {
             String day = spinnerDay.getSelectedItem().toString().trim().toUpperCase(Locale.US);
             String subject = etSubject.getText().toString().trim();
-            String startTime = String.format("%02d:%02d", timeStart.getCurrentHour(), timeStart.getCurrentMinute());
-            String endTime = String.format("%02d:%02d", timeEnd.getCurrentHour(), timeEnd.getCurrentMinute());
+            String startTime = formatTime(timeStart.getCurrentHour(), timeStart.getCurrentMinute());
+            String endTime = formatTime(timeEnd.getCurrentHour(), timeEnd.getCurrentMinute());
 
             if (!day.isEmpty() && !subject.isEmpty()) {
                 String entry = String.format("%s | %s (%s - %s)", day, subject, startTime, endTime);
                 allSchedules.add(entry);
-                Collections.sort(allSchedules, new Comparator<String>() {
-                    @Override
-                    public int compare(String s1, String s2) {
-                        return s1.compareTo(s2);
-                    }
-                });
+                sortSchedulesByTime();
                 updateScheduleList();
             } else {
                 Toast.makeText(MainActivity.this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
@@ -257,5 +243,42 @@ public class MainActivity extends AppCompatActivity {
                 button.setTextColor(getResources().getColor(android.R.color.black));
             }
         }
+    }
+
+    private void sortSchedulesByTime() {
+        Collections.sort(allSchedules, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                String time1 = extractStartTime(s1);
+                String time2 = extractStartTime(s2);
+                return compareTimes(time1, time2);
+            }
+        });
+    }
+
+    private String extractStartTime(String scheduleEntry) {
+        Pattern pattern = Pattern.compile("\\((\\d{1,2}:\\d{2}\\s?[AP]M)");
+        Matcher matcher = pattern.matcher(scheduleEntry);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return "12:00 AM";
+    }
+
+    private int compareTimes(String t1, String t2) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.US);
+            return sdf.parse(t1).compareTo(sdf.parse(t2));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private String formatTime(int hour, int minute) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.US);
+        return sdf.format(cal.getTime());
     }
 }
