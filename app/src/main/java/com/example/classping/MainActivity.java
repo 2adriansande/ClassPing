@@ -208,16 +208,44 @@ public class MainActivity extends AppCompatActivity {
 
         Spinner spinnerDay = dialogView.findViewById(R.id.spinnerDay);
         EditText etSubject = dialogView.findViewById(R.id.etSubject);
-        TimePicker timeStart = dialogView.findViewById(R.id.timeStart);
-        TimePicker timeEnd = dialogView.findViewById(R.id.timeEnd);
+        TextView tvStartTime = dialogView.findViewById(R.id.tvStartTime);
+        TextView tvEndTime = dialogView.findViewById(R.id.tvEndTime);
+
+        // Fill day spinner
+        String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+        ArrayAdapter<String> dayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, days);
+        dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDay.setAdapter(dayAdapter);
+
+        // Pick start time
+        tvStartTime.setOnClickListener(v -> {
+            Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            new android.app.TimePickerDialog(this, (view, selectedHour, selectedMinute) -> {
+                tvStartTime.setText(formatTime(selectedHour, selectedMinute));
+            }, hour, minute, false).show();
+        });
+
+        // Pick end time
+        tvEndTime.setOnClickListener(v -> {
+            Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            new android.app.TimePickerDialog(this, (view, selectedHour, selectedMinute) -> {
+                tvEndTime.setText(formatTime(selectedHour, selectedMinute));
+            }, hour, minute, false).show();
+        });
 
         builder.setPositiveButton("Add", (dialog, id) -> {
             String day = spinnerDay.getSelectedItem().toString().trim().toUpperCase(Locale.US);
             String subject = etSubject.getText().toString().trim();
-            String startTime = formatTime(timeStart.getCurrentHour(), timeStart.getCurrentMinute());
-            String endTime = formatTime(timeEnd.getCurrentHour(), timeEnd.getCurrentMinute());
+            String startTime = tvStartTime.getText().toString().trim();
+            String endTime = tvEndTime.getText().toString().trim();
 
-            if (!day.isEmpty() && !subject.isEmpty()) {
+            if (!day.isEmpty() && !subject.isEmpty() && !startTime.isEmpty() && !endTime.isEmpty()) {
                 String entry = String.format("%s | %s (%s - %s)", day, subject, startTime, endTime);
                 allSchedules.add(entry);
                 sortSchedulesByTime();
@@ -231,6 +259,8 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+
 
     private void highlightSelectedDay() {
         for (Map.Entry<String, Button> entry : dayButtons.entrySet()) {
