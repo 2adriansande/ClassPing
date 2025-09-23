@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp">
 
         <Button android:id="@+id/btnSun" android:text="Sun" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content"/>
@@ -22,7 +23,7 @@
         <Button android:id="@+id/btnSat" android:text="Sat" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <!-- Schedule List -->
+
     <ListView
         android:id="@+id/scheduleList"
         android:layout_width="match_parent"
@@ -35,6 +36,7 @@
         android:id="@+id/btnAdd"
         android:layout_width="60dp"
         android:layout_height="60dp"
+
         android:text="+"
         android:textSize="30sp"
         android:backgroundTint="@android:color/holo_blue_light"

@@ -24,6 +24,12 @@
         android:layout_height="wrap_content"
         android:inputType="text" />
     <EditText
+        android:id="@+id/etProgram"
+        android:hint="Program/Section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text" />
+    <EditText
         android:id="@+id/etNotes"
         android:hint="Notes"
         android:layout_width="match_parent"

@@ -18,13 +18,7 @@ import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> allSchedules;
     ArrayList<String> displayedSchedules;
     String selectedDay = "UNKNOWN_DAY";
-
     Map<String, Button> dayButtons = new HashMap<>();
 
     @Override
@@ -71,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        // Set default day
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         switch (dayOfWeek) {
@@ -86,11 +80,31 @@ public class MainActivity extends AppCompatActivity {
         highlightSelectedDay();
 
         btnAdd.setOnClickListener(v -> showAddDialog());
+
         btnUploadImage.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select Image"), 100);
+        });
+
+        // Make schedule entries editable on click
+        scheduleList.setOnItemClickListener((parent, view, position, id) -> showAddDialog(position));
+
+        // Optional: long press to delete
+        scheduleList.setOnItemLongClickListener((parent, view, position, id) -> {
+            String entry = displayedSchedules.get(position);
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete Schedule")
+                    .setMessage("Are you sure you want to delete this schedule?\n\n" + entry)
+                    .setPositiveButton("Delete", (dialog, which) -> {
+                        allSchedules.remove(entry);
+                        updateScheduleList();
+                        Toast.makeText(this, "Schedule deleted.", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+            return true;
         });
     }
 
@@ -118,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
                     .addOnSuccessListener(visionText -> {
                         String recognizedText = visionText.getText();
                         android.util.Log.d("OCR_OUTPUT", "Recognized Text: '" + recognizedText + "'");
-
                         if (recognizedText.trim().isEmpty()) {
                             Toast.makeText(this, "No text found in the image.", Toast.LENGTH_SHORT).show();
                         } else {
@@ -130,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
                         android.util.Log.e("OCR_ERROR", "OCR Failed: ", e);
                         Toast.makeText(this, "OCR Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
-
         } catch (Exception e) {
             android.util.Log.e("PROCESS_IMAGE_ERROR", "Error processing image: ", e);
             Toast.makeText(this, "Error processing image: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -200,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    private void showAddDialog() {
+    private void showAddDialog(int editPosition) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_add_schedule, null);
@@ -208,59 +220,102 @@ public class MainActivity extends AppCompatActivity {
 
         Spinner spinnerDay = dialogView.findViewById(R.id.spinnerDay);
         EditText etSubject = dialogView.findViewById(R.id.etSubject);
+        EditText etProgram = dialogView.findViewById(R.id.etProgram);
+        EditText etRoom = dialogView.findViewById(R.id.etRoom);
         TextView tvStartTime = dialogView.findViewById(R.id.tvStartTime);
         TextView tvEndTime = dialogView.findViewById(R.id.tvEndTime);
 
-        // Fill day spinner
         String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
         ArrayAdapter<String> dayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, days);
         dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDay.setAdapter(dayAdapter);
 
-        // Pick start time
+        // Pre-fill fields if editing
+        if (editPosition >= 0) {
+            String entry = displayedSchedules.get(editPosition);
+            String[] parts = entry.split("\\|");
+            if (parts.length >= 2) {
+                // Set day
+                String dayPart = parts[0].trim();
+                spinnerDay.setSelection(Arrays.asList(days).indexOf(dayPart.substring(0,1).toUpperCase() + dayPart.substring(1).toLowerCase()));
+
+                // Extract subject, program, room, time
+                String rest = parts[1].trim();
+                String subject = rest, program = "", room = "", startTime = "", endTime = "";
+
+                if (rest.contains("(") && rest.contains(")")) {
+                    String timeOrRoom = rest.substring(rest.indexOf('(')+1, rest.indexOf(')'));
+                    if (timeOrRoom.contains("-")) {
+                        String[] times = timeOrRoom.split("-");
+                        startTime = times[0].trim();
+                        endTime = times[1].trim();
+                    } else {
+                        room = timeOrRoom.trim();
+                    }
+                }
+
+                if (rest.contains("[") && rest.contains("]")) {
+                    program = rest.substring(rest.indexOf('[')+1, rest.indexOf(']'));
+                    subject = rest.substring(0, rest.indexOf('[')).trim();
+                }
+
+                etSubject.setText(subject);
+                etProgram.setText(program);
+                etRoom.setText(room);
+                tvStartTime.setText(startTime);
+                tvEndTime.setText(endTime);
+            }
+        }
+
         tvStartTime.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
-            new android.app.TimePickerDialog(this, (view, selectedHour, selectedMinute) -> {
-                tvStartTime.setText(formatTime(selectedHour, selectedMinute));
-            }, hour, minute, false).show();
+            new android.app.TimePickerDialog(this, (view, hour, minute) -> tvStartTime.setText(formatTime(hour, minute)), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false).show();
         });
-
-        // Pick end time
         tvEndTime.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
-            new android.app.TimePickerDialog(this, (view, selectedHour, selectedMinute) -> {
-                tvEndTime.setText(formatTime(selectedHour, selectedMinute));
-            }, hour, minute, false).show();
+            new android.app.TimePickerDialog(this, (view, hour, minute) -> tvEndTime.setText(formatTime(hour, minute)), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false).show();
         });
 
-        builder.setPositiveButton("Add", (dialog, id) -> {
+        builder.setPositiveButton(editPosition >= 0 ? "Update" : "Add", (dialog, id) -> {
             String day = spinnerDay.getSelectedItem().toString().trim().toUpperCase(Locale.US);
             String subject = etSubject.getText().toString().trim();
+            String program = etProgram.getText().toString().trim();
+            String room = etRoom.getText().toString().trim();
             String startTime = tvStartTime.getText().toString().trim();
             String endTime = tvEndTime.getText().toString().trim();
 
-            if (!day.isEmpty() && !subject.isEmpty() && !startTime.isEmpty() && !endTime.isEmpty()) {
-                String entry = String.format("%s | %s (%s - %s)", day, subject, startTime, endTime);
-                allSchedules.add(entry);
+            if (!day.isEmpty() && !subject.isEmpty()) {
+                String entry;
+                if (!program.isEmpty() && !room.isEmpty()) {
+                    entry = String.format("%s | %s [%s] (%s)", day, subject, program, room);
+                } else if (!startTime.isEmpty() && !endTime.isEmpty()) {
+                    entry = String.format("%s | %s (%s - %s)", day, subject, startTime, endTime);
+                } else {
+                    entry = String.format("%s | %s", day, subject);
+                }
+
+                if (editPosition >= 0) {
+                    String original = displayedSchedules.get(editPosition);
+                    int indexInAll = allSchedules.indexOf(original);
+                    if (indexInAll >= 0) allSchedules.set(indexInAll, entry);
+                } else {
+                    allSchedules.add(entry);
+                }
+
                 sortSchedulesByTime();
                 updateScheduleList();
             } else {
-                Toast.makeText(MainActivity.this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Please fill the subject and day.", Toast.LENGTH_SHORT).show();
             }
         });
 
         builder.setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        builder.create().show();
     }
 
-
+    private void showAddDialog() {
+        showAddDialog(-1);
+    }
 
     private void highlightSelectedDay() {
         for (Map.Entry<String, Button> entry : dayButtons.entrySet()) {
@@ -276,22 +331,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sortSchedulesByTime() {
-        Collections.sort(allSchedules, new Comparator<String>() {
-            @Override
-            public int compare(String s1, String s2) {
-                String time1 = extractStartTime(s1);
-                String time2 = extractStartTime(s2);
-                return compareTimes(time1, time2);
-            }
-        });
+        Collections.sort(allSchedules, (s1, s2) -> compareTimes(extractStartTime(s1), extractStartTime(s2)));
     }
 
     private String extractStartTime(String scheduleEntry) {
         Pattern pattern = Pattern.compile("\\((\\d{1,2}:\\d{2}\\s?[AP]M)");
         Matcher matcher = pattern.matcher(scheduleEntry);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
+        if (matcher.find()) return matcher.group(1);
         return "12:00 AM";
     }
 
