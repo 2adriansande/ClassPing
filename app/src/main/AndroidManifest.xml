@@ -15,8 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ClassPing">
 
+        <!-- Landing page should be the first activity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".LandingPage"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ClassPing">
@@ -26,5 +27,11 @@
             </intent-filter>
         </activity>
 
+        <!-- Main activity no longer has launcher intent -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.ClassPing" />
     </application>
 </manifest>

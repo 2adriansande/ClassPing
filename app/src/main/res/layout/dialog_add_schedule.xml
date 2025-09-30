@@ -23,12 +23,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />
+
     <EditText
         android:id="@+id/etProgram"
         android:hint="Program/Section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />
+
     <EditText
         android:id="@+id/etNotes"
         android:hint="Notes"
@@ -57,12 +59,16 @@
         android:focusable="false" />
 
     <TextView
-        android:id="@+id/etReminder"
-        android:hint="Reminder"
+        android:id="@+id/tvReminder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Reminder"
         android:paddingTop="10dp"
+        android:textStyle="bold" />
 
-        />
-
+    <Spinner
+        android:id="@+id/spinnerReminder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
 </LinearLayout>

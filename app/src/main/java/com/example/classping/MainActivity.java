@@ -88,10 +88,8 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(Intent.createChooser(intent, "Select Image"), 100);
         });
 
-        // Make schedule entries editable on click
         scheduleList.setOnItemClickListener((parent, view, position, id) -> showAddDialog(position));
 
-        // Optional: long press to delete
         scheduleList.setOnItemLongClickListener((parent, view, position, id) -> {
             String entry = displayedSchedules.get(position);
             new AlertDialog.Builder(this)
@@ -106,6 +104,12 @@ public class MainActivity extends AppCompatActivity {
                     .show();
             return true;
         });
+
+        // 🔥 Check if launched via Manual button
+        String openMode = getIntent().getStringExtra("openMode");
+        if ("manual".equals(openMode)) {
+            new android.os.Handler().post(() -> showAddDialog());
+        }
     }
 
     @Override
@@ -131,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
             recognizer.process(image)
                     .addOnSuccessListener(visionText -> {
                         String recognizedText = visionText.getText();
-                        android.util.Log.d("OCR_OUTPUT", "Recognized Text: '" + recognizedText + "'");
                         if (recognizedText.trim().isEmpty()) {
                             Toast.makeText(this, "No text found in the image.", Toast.LENGTH_SHORT).show();
                         } else {
@@ -140,11 +143,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     })
                     .addOnFailureListener(e -> {
-                        android.util.Log.e("OCR_ERROR", "OCR Failed: ", e);
                         Toast.makeText(this, "OCR Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
         } catch (Exception e) {
-            android.util.Log.e("PROCESS_IMAGE_ERROR", "Error processing image: ", e);
             Toast.makeText(this, "Error processing image: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
@@ -183,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
                 if (!currentCourse.isEmpty()) {
                     String entry = String.format("%s | %s [%s] (%s)", currentDay, currentCourse, currentProgram, currentRoom);
                     allSchedules.add(entry);
-                    android.util.Log.d("SCHEDULE_PARSED", "Added: " + entry);
                     currentCourse = "";
                     currentRoom = "";
                     currentProgram = "";
@@ -224,6 +224,15 @@ public class MainActivity extends AppCompatActivity {
         EditText etRoom = dialogView.findViewById(R.id.etRoom);
         TextView tvStartTime = dialogView.findViewById(R.id.tvStartTime);
         TextView tvEndTime = dialogView.findViewById(R.id.tvEndTime);
+        Spinner spinnerReminder = dialogView.findViewById(R.id.spinnerReminder);
+
+        ArrayAdapter<CharSequence> reminderAdapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.reminder_options,
+                android.R.layout.simple_spinner_item
+        );
+        reminderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerReminder.setAdapter(reminderAdapter);
 
         String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
         ArrayAdapter<String> dayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, days);
@@ -235,35 +244,8 @@ public class MainActivity extends AppCompatActivity {
             String entry = displayedSchedules.get(editPosition);
             String[] parts = entry.split("\\|");
             if (parts.length >= 2) {
-                // Set day
                 String dayPart = parts[0].trim();
                 spinnerDay.setSelection(Arrays.asList(days).indexOf(dayPart.substring(0,1).toUpperCase() + dayPart.substring(1).toLowerCase()));
-
-                // Extract subject, program, room, time
-                String rest = parts[1].trim();
-                String subject = rest, program = "", room = "", startTime = "", endTime = "";
-
-                if (rest.contains("(") && rest.contains(")")) {
-                    String timeOrRoom = rest.substring(rest.indexOf('(')+1, rest.indexOf(')'));
-                    if (timeOrRoom.contains("-")) {
-                        String[] times = timeOrRoom.split("-");
-                        startTime = times[0].trim();
-                        endTime = times[1].trim();
-                    } else {
-                        room = timeOrRoom.trim();
-                    }
-                }
-
-                if (rest.contains("[") && rest.contains("]")) {
-                    program = rest.substring(rest.indexOf('[')+1, rest.indexOf(']'));
-                    subject = rest.substring(0, rest.indexOf('[')).trim();
-                }
-
-                etSubject.setText(subject);
-                etProgram.setText(program);
-                etRoom.setText(room);
-                tvStartTime.setText(startTime);
-                tvEndTime.setText(endTime);
             }
         }
 
@@ -303,7 +285,11 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 sortSchedulesByTime();
+
+                // 🔥 Auto-switch to chosen day
+                selectedDay = day;
                 updateScheduleList();
+                highlightSelectedDay();
             } else {
                 Toast.makeText(MainActivity.this, "Please fill the subject and day.", Toast.LENGTH_SHORT).show();
             }

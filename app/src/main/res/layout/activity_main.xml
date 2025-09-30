@@ -4,14 +4,26 @@
     android:layout_height="match_parent"
     android:padding="10dp">
 
+
+    <TextView
+        android:id="@+id/header_title"
+        android:fontFamily="@font/revalia"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Logo_name"
+        android:padding="5dp"
+        android:layout_marginBottom="5dp"/>
+
     <!-- Week Navigation Bar -->
     <LinearLayout
         android:id="@+id/weekNav"
+        android:layout_below="@id/header_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="10dp">
 
         <Button android:id="@+id/btnSun" android:text="Sun" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content"/>
@@ -36,7 +48,6 @@
         android:id="@+id/btnAdd"
         android:layout_width="60dp"
         android:layout_height="60dp"
-
         android:text="+"
         android:textSize="30sp"
         android:backgroundTint="@android:color/holo_blue_light"

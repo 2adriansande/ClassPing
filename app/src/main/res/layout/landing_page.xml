@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    >
+
+
+
+    <TextView
+
+        android:fontFamily="@font/revalia"
+        android:id="@+id/ClassPing"
+        android:textColor="@color/dark_gold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Logo_name"
+        android:textSize= "43sp"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/desription"
+        android:fontFamily="@font/roboto_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="50dp"
+        android:gravity="center"
+        android:layout_below="@+id/ClassPing"
+        android:text="@string/Logo_description"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btnScan"
+        android:layout_centerHorizontal="true"
+        android:padding="20dp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/blue_selected"
+        android:layout_above="@+id/scanSchedule"
+
+        android:text="Scan"/>
+
+    <TextView
+        android:id="@+id/scanSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Scan your schedule"
+        android:textSize="12dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="20dp"
+        android:layout_above="@+id/manual"
+        android:layout_centerInParent="true" />
+
+
+    <Button
+        android:id="@+id/manual"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/manualtext"
+        android:text="Manual"
+        android:backgroundTint="@color/blue_selected"
+
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/manualtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12dp"
+        android:layout_marginBottom="50dp"
+        android:text="Enter your schedule manually"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"/>
+
+
+
+
+</RelativeLayout>
