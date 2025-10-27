@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    android:background="@android:color/white">
+
+    <!-- Header / App Name -->
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ClassPing"
+        android:fontFamily="@font/revalia"
+        android:textColor="@color/dark_gold"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"/>
+
+    <!-- Current Date -->
+    <TextView
+        android:id="@+id/tvCurrentDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Oct 25, 2025"
+        android:textSize="16sp"
+        android:layout_below="@id/header_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Current Day -->
+    <TextView
+        android:id="@+id/tvCurrentDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Saturday"
+        android:textSize="16sp"
+        android:layout_below="@id/tvCurrentDate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Day Selector Spinner -->
+    <Spinner
+        android:id="@+id/spinnerDays"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvCurrentDay"
+        android:spinnerMode="dropdown"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Schedule RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/scheduleRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/spinnerDays"
+        android:layout_above="@+id/btnAdd"
+        android:clipToPadding="false"
+        android:paddingBottom="100dp"/>
+
+    <!-- Add Schedule Button -->
+    <ImageButton
+        android:id="@+id/btnAdd"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_input_add"
+        android:background="@drawable/circle_button"
+        app:tint="@android:color/white"
+        android:contentDescription="Add Schedule"/>
+
+    <!-- Upload Schedule Image Button -->
+    <ImageButton
+        android:id="@+id/btnUploadImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_toStartOf="@id/btnAdd"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@android:drawable/ic_menu_upload"
+        android:background="@drawable/circle_button"
+        app:tint="@android:color/background_light"
+        android:contentDescription="Upload Schedule Image"/>
+
+</RelativeLayout>

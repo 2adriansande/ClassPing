@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ScheduleApp</string>
+    <string-array name="days_array">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
+    <string-array name="reminder_options">
+        <item>5 minutes before</item>
+        <item>10 minutes before</item>
+        <item>30 minutes before</item>
+    </string-array>
+
+
+    <string name="Logo_name">ClassPing</string>
+    <string name="Logo_description">Class ping is smart mobile app that uses optical character recognition to turn class schedules into interactive planners with reminders, helping students stay organized and on time.</string>
+</resources>
