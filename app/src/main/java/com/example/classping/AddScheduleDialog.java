@@ -25,10 +25,15 @@ public class AddScheduleDialog extends Dialog {
         EditText etNotes = findViewById(R.id.etNotes);
         TextView tvStart = findViewById(R.id.tvStartTime);
         TextView tvEnd = findViewById(R.id.tvEndTime);
+        Spinner spinnerReminder = findViewById(R.id.spinnerReminder);
         Button btnSave = findViewById(R.id.btnSaveSchedule);
 
         String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
         spinnerDay.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, days));
+
+        // Reminder options (stored in model, although manager sets default reminder behavior)
+        String[] reminders = {"None","5 minutes before","10 minutes before","30 minutes before","1 hour before"};
+        spinnerReminder.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, reminders));
 
         tvStart.setOnClickListener(v -> TimePickerHelper.showTimePicker(context, tvStart));
         tvEnd.setOnClickListener(v -> TimePickerHelper.showTimePicker(context, tvEnd));
@@ -42,6 +47,9 @@ public class AddScheduleDialog extends Dialog {
                 return;
             }
 
+            String reminder = spinnerReminder.getSelectedItem() != null ?
+                    spinnerReminder.getSelectedItem().toString() : "None";
+
             Schedule s = new Schedule(
                     spinnerDay.getSelectedItem().toString(),
                     etSubject.getText().toString().trim(),
@@ -50,10 +58,14 @@ public class AddScheduleDialog extends Dialog {
                     tvStart.getText().toString(),
                     tvEnd.getText().toString(),
                     etNotes.getText().toString().trim(),
-                    "None"
+                    reminder
             );
 
+            // Manager will add to DB and schedule reminder
             manager.addSchedule(s);
+            // Optional: also sync to firebase if desired
+            manager.syncToFirebase();
+
             refreshCallback.run();
             dismiss();
         });

@@ -2,26 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
-    >
-
-
+    android:padding="10dp">
 
     <TextView
-
-        android:fontFamily="@font/revalia"
         android:id="@+id/ClassPing"
+        android:fontFamily="@font/revalia"
         android:textColor="@color/dark_gold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Logo_name"
-        android:textSize= "43sp"
+        android:textSize="43sp"
         android:layout_marginTop="100dp"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_centerHorizontal="true" />
 
     <TextView
-        android:id="@+id/desription"
+        android:id="@+id/description"
         android:fontFamily="@font/roboto_light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,8 +24,39 @@
         android:gravity="center"
         android:layout_below="@+id/ClassPing"
         android:text="@string/Logo_description"
-        android:textSize="24sp" />
+        android:textSize="20sp" />
 
+    <!-- Login Buttons Section -->
+    <LinearLayout
+        android:id="@+id/loginOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_below="@+id/description"
+        android:layout_marginTop="40dp">
+
+        <Button
+            android:id="@+id/btnStudentLogin"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:padding="14dp"
+            android:backgroundTint="@color/blue_selected"
+            android:text="Login as Student"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btnAdminLogin"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:padding="14dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/blue_selected"
+            android:text="Login as Admin"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
+    <!-- Existing Buttons (Optional) -->
     <Button
         android:id="@+id/btnScan"
         android:layout_centerHorizontal="true"
@@ -39,8 +65,8 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/blue_selected"
         android:layout_above="@+id/scanSchedule"
-
-        android:text="Scan"/>
+        android:text="Scan Schedule"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/scanSchedule"
@@ -51,8 +77,8 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="20dp"
         android:layout_above="@+id/manual"
-        android:layout_centerInParent="true" />
-
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/manual"
@@ -60,10 +86,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/manualtext"
-        android:text="Manual"
+        android:text="Manual Entry"
         android:backgroundTint="@color/blue_selected"
-
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/manualtext"
@@ -73,9 +99,7 @@
         android:layout_marginBottom="50dp"
         android:text="Enter your schedule manually"
         android:layout_centerInParent="true"
-        android:layout_alignParentBottom="true"/>
-
-
-
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

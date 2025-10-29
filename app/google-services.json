@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "184842251053",
+    "project_id": "classping-6c85a",
+    "storage_bucket": "classping-6c85a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184842251053:android:f40601bb2c0ce9888e81a4",
+        "android_client_info": {
+          "package_name": "com.example.classping"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5wwgjtYbCrNCuK-wNgLM84Fm1hdiGUA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

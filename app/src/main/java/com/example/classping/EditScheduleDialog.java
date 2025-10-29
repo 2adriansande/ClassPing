@@ -25,10 +25,14 @@ public class EditScheduleDialog extends Dialog {
         EditText etNotes = findViewById(R.id.etNotes);
         TextView tvStart = findViewById(R.id.tvStartTime);
         TextView tvEnd = findViewById(R.id.tvEndTime);
+        Spinner spinnerReminder = findViewById(R.id.spinnerReminder);
         Button btnSave = findViewById(R.id.btnSaveSchedule);
 
         String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
         spinnerDay.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, days));
+
+        String[] reminders = {"None","5 minutes before","10 minutes before","30 minutes before","1 hour before"};
+        spinnerReminder.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, reminders));
 
         int idx = java.util.Arrays.asList(days).indexOf(oldSchedule.getDay());
         spinnerDay.setSelection(idx >= 0 ? idx : 0);
@@ -38,6 +42,9 @@ public class EditScheduleDialog extends Dialog {
         etNotes.setText(oldSchedule.getNotes());
         tvStart.setText(oldSchedule.getStartTime());
         tvEnd.setText(oldSchedule.getEndTime());
+
+        int reminderPos = java.util.Arrays.asList(reminders).indexOf(oldSchedule.getReminder());
+        if (reminderPos >= 0) spinnerReminder.setSelection(reminderPos);
 
         tvStart.setOnClickListener(v -> TimePickerHelper.showTimePicker(context, tvStart));
         tvEnd.setOnClickListener(v -> TimePickerHelper.showTimePicker(context, tvEnd));
@@ -51,6 +58,9 @@ public class EditScheduleDialog extends Dialog {
                 return;
             }
 
+            String reminder = spinnerReminder.getSelectedItem() != null ?
+                    spinnerReminder.getSelectedItem().toString() : "None";
+
             Schedule ns = new Schedule(oldSchedule.getId(),
                     spinnerDay.getSelectedItem().toString(),
                     etSubject.getText().toString().trim(),
@@ -59,9 +69,12 @@ public class EditScheduleDialog extends Dialog {
                     tvStart.getText().toString(),
                     tvEnd.getText().toString(),
                     etNotes.getText().toString().trim(),
-                    "None");
+                    reminder);
 
             manager.updateSchedule(oldSchedule.getId(), ns);
+            // Optional: sync
+            manager.syncToFirebase();
+
             refreshCallback.run();
             dismiss();
         });

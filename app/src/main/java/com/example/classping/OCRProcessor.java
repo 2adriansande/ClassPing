@@ -95,15 +95,21 @@ public class OCRProcessor {
                                 return;
                             }
 
-                            // Add only new schedules (duplicates already filtered in parsing methods)
+                            // Add new schedules locally
                             int added = 0;
                             for (Schedule s : parsedGrid) {
                                 scheduleManager.addSchedule(s);
                                 added++;
                             }
 
+                            // ✅ Auto-sync new schedules to Firestore
+                            if (added > 0) {
+                                Toast.makeText(context, "Saving schedules to Firestore...", Toast.LENGTH_SHORT).show();
+                                scheduleManager.syncToFirebase();
+                            }
+
                             refreshCallback.run();
-                            Toast.makeText(context, added + " new schedule(s) added from timetable.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, added + " new schedule(s) added and synced.", Toast.LENGTH_LONG).show();
 
                         } catch (Exception e) {
                             Log.e(TAG, "Parsing error", e);
@@ -114,6 +120,7 @@ public class OCRProcessor {
                         Log.e(TAG, "OCR failed", e);
                         Toast.makeText(context, "OCR Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
+
 
         } catch (Exception e) {
             Log.e(TAG, "Error processing image", e);

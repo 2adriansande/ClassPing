@@ -2,24 +2,37 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permission must be outside application/activity -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/Logo_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ClassPing">
+        android:theme="@style/Theme.ClassPing"
+        tools:targetApi="33">
+        <receiver android:name=".ReminderReceiver" />
+        <!-- Landing Page (App Entry) -->
 
-        <!-- Landing page should be the first activity -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+
         <activity
             android:name=".LandingPage"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="@string/Logo_name"
             android:theme="@style/Theme.ClassPing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,11 +40,42 @@
             </intent-filter>
         </activity>
 
-        <!-- Main activity no longer has launcher intent -->
+        <!-- Student Dashboard -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ClassPing" />
+
+        <!-- Admin Dashboard -->
+        <activity
+            android:name="AdminDashboardActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- Login -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- Register -->
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- Announcements -->
+        <activity
+            android:name=".announcements.AnnouncementActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- View Announcements (Students) -->
+        <activity
+            android:name=".announcements.ViewAnnouncementsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
     </application>
 </manifest>

@@ -17,6 +17,9 @@
     </string-array>
 
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="Logo_name">ClassPing</string>
     <string name="Logo_description">Class ping is smart mobile app that uses optical character recognition to turn class schedules into interactive planners with reminders, helping students stay organized and on time.</string>
 </resources>
