@@ -21,6 +21,7 @@
             android:layout_height="36dp"
             android:layout_alignParentStart="true"
             android:layout_marginTop="8dp"
+            android:tint="@color/blue_selected"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_sort_by_size"
             android:contentDescription="Menu" />
@@ -90,6 +91,7 @@
             android:layout_margin="16dp">
 
             <!-- Sync Now Button -->
+
             <ImageButton
                 android:id="@+id/btnSyncNow"
                 android:layout_width="60dp"
@@ -99,6 +101,7 @@
                 android:background="@drawable/circle_button"
                 app:tint="@android:color/background_light"
                 android:contentDescription="Sync Firestore" />
+
 
             <!-- Upload Schedule Image Button -->
             <ImageButton

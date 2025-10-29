@@ -3,7 +3,7 @@ package com.example.classping;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.classping.LoginActivity;
+
 import com.example.classping.announcements.AdminAnnouncementActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

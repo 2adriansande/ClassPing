@@ -4,22 +4,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.classping.LoginActivity;
 
 public class LandingPage extends AppCompatActivity {
 
-    private Button studentBtn, adminBtn;
+    private Button studentBtn, professorBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.landing_page);
+        setContentView(R.layout.landing_page); // Make sure this XML name matches!
 
         studentBtn = findViewById(R.id.btnStudentLogin);
-        adminBtn = findViewById(R.id.btnAdminLogin);
+        professorBtn = findViewById(R.id.btnProfessorLogin);
 
         studentBtn.setOnClickListener(v -> openLogin("student"));
-        adminBtn.setOnClickListener(v -> openLogin("admin"));
+        professorBtn.setOnClickListener(v -> openLogin("admin"));
     }
 
     private void openLogin(String role) {

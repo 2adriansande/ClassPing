@@ -1,22 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Header with student info -->
     <group android:id="@+id/group_header">
         <item
             android:id="@+id/nav_header"
-            android:title=""
+            android:title="ClassPing"
             android:enabled="false"
             android:actionLayout="@layout/drawer_header"/>
     </group>
 
     <!-- Regular menu items -->
     <item
+        android:id="@+id/nav_profile"
+        android:title="Profile" /> <!-- Or your custom icon -->
+
+    <item
         android:id="@+id/nav_announcements"
-        android:title="Announcements"
-        android:icon="@android:drawable/ic_dialog_info"/>
+        android:title="Announcements"/>
+
     <item
         android:id="@+id/nav_logout"
+
         android:title="Logout"
-        android:icon="@android:drawable/ic_lock_power_off"/>
+        />
 </menu>

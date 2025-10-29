@@ -24,6 +24,8 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
 
+    private String selectedRole = "student"; // default
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,18 +33,20 @@ public class LoginActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
+        // 🧭 Get role from LandingPage
+        if (getIntent() != null && getIntent().hasExtra("role")) {
+            selectedRole = getIntent().getStringExtra("role");
+        }
+
         SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
         boolean isLoggedOut = prefs.getBoolean("isLoggedOut", false);
-
         FirebaseUser currentUser = auth.getCurrentUser();
 
-        // 🔹 Skip auto-login if the user just logged out
         if (currentUser != null && !isLoggedOut) {
             autoLogin(currentUser.getUid());
             return;
         }
 
-        // 🔹 Reset logout flag once LoginActivity opens
         prefs.edit().putBoolean("isLoggedOut", false).apply();
 
         setContentView(R.layout.activity_login);
@@ -68,14 +72,12 @@ public class LoginActivity extends AppCompatActivity {
 
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(result -> {
-                    // Reset logout flag after successful login
                     getSharedPreferences("UserSession", MODE_PRIVATE)
                             .edit()
                             .putBoolean("isLoggedOut", false)
                             .apply();
 
-                    String uid = result.getUser().getUid();
-                    autoLogin(uid);
+                    autoLogin(result.getUser().getUid());
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -86,19 +88,25 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
                         String role = doc.getString("role");
+                        if (role == null) role = selectedRole; // fallback if not saved yet
+
+                        Intent intent;
                         if ("admin".equalsIgnoreCase(role)) {
-                            startActivity(new Intent(this, AdminDashboardActivity.class));
+                            intent = new Intent(this, AdminDashboardActivity.class);
                         } else {
-                            startActivity(new Intent(this, MainActivity.class));
+                            intent = new Intent(this, MainActivity.class);
                         }
+
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(this, "User data missing in Firestore", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "User data missing", Toast.LENGTH_LONG).show();
                         auth.signOut();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error loading user role: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Error loading role: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     auth.signOut();
                 });
     }
