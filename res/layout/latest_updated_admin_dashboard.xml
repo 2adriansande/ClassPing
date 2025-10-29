@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Top Bar -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <ImageButton
+                android:id="@+id/btnManageAnnouncements"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/baseline_arrow_back_24"
+                android:contentDescription="Back" />
+
+            <TextView
+                android:id="@+id/dashboardTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Admin Dashboard"
+                android:textColor="#5264BF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <!-- Announcement Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Announcements"
+            android:textColor="#5264BF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/btnViewFeedback"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Write an announcement..."
+            android:gravity="top|start"
+            android:padding="12dp" />
+
+        <Button
+            android:id="@+id/btnManageSchedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_button"
+            android:text="Post Announcement"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
+
+        <!-- Management Buttons Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Management"
+            android:textColor="#5264BF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnManageStudents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🎓 Manage Students"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:background="@drawable/rounded_card"
+            android:padding="12dp" />
+
+        <Button
+            android:id="@+id/btnManageProfessors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="👨‍🏫 Manage Professors"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_card"
+            android:padding="12dp" />
+
+        <Button
+            android:id="@+id/btnManageScheduleAgain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📅 Manage Schedule"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_card"
+            android:padding="12dp" />
+
+        <!-- Logout -->
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:text="Logout"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
+    </LinearLayout>
+</ScrollView>
