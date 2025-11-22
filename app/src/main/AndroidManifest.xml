@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissions -->
+    <!-- ✅ Permissions -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -31,7 +32,7 @@
             </intent-filter>
         </activity>
 
-        <!-- 🚀 Landing Page (after Splash) -->
+        <!-- 🚀 Landing Page -->
         <activity
             android:name=".LandingPage"
             android:exported="true"
@@ -49,8 +50,6 @@
             android:exported="true"
             android:theme="@style/Theme.ClassPing" />
 
-
-
         <!-- 🧭 Student Dashboard -->
         <activity
             android:name=".MainActivity"
@@ -61,16 +60,36 @@
         <activity
             android:name=".StudentProfileActivity"
             android:exported="true"
-            android:theme="@style/Theme.ClassPing"/>
+            android:theme="@style/Theme.ClassPing" />
 
+        <!-- 👨‍🏫 Professor Dashboard -->
+        <activity
+            android:name=".ProfessorDashboardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ClassPing" />
 
-        <!-- 👩‍🏫 Admin Dashboard -->
+        <activity
+            android:name=".ProfessorAnnouncementActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 📚 Manage Classes (New Activity) -->
+        <activity
+            android:name=".ManageClassesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 👩‍💼 Admin Dashboard -->
         <activity
             android:name=".AdminDashboardActivity"
             android:exported="true"
             android:theme="@style/Theme.ClassPing" />
+        <activity
+            android:name=".ManageScheduleActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
 
-        <!-- 📢 Announcements -->
+        <!-- 📢 Announcement Creation -->
         <activity
             android:name=".announcements.AnnouncementActivity"
             android:exported="true"
@@ -78,9 +97,18 @@
 
         <!-- 👀 Student View Announcements -->
         <activity
-            android:name=".announcements.ViewAnnouncementsActivity"
+            android:name=".announcements.StudentViewAnnouncementsActivity"
             android:exported="true"
             android:theme="@style/Theme.ClassPing" />
+
+        <!-- 🔔 Firebase Messaging Service -->
+        <service
+            android:name=".notifications.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
     </application>
 </manifest>

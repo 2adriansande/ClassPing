@@ -48,6 +48,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.annotation:annotation:1.9.1")
+    implementation("com.google.firebase:firebase-messaging:24.0.1")
     implementation(libs.play.services.mlkit.text.recognition)
     implementation("com.google.android.material:material:1.12.0")
     implementation(libs.androidx.core.ktx)

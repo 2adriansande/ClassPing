@@ -31,9 +31,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Enhanced OCRProcessor with improved timetable grid parsing
- */
+
 public class OCRProcessor {
 
     private static final String TAG = "OCRProcessor";
@@ -54,10 +52,17 @@ public class OCRProcessor {
             return;
         }
 
+        FragmentActivity activity = (FragmentActivity) context;
+        LoadingDialogFragment loadingDialog = LoadingDialogFragment.newInstance();
+
         try {
+            // ✅ Show loading dialog
+            loadingDialog.show(activity.getSupportFragmentManager(), "loading");
+
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
             if (bitmap == null) {
                 Toast.makeText(context, "Failed to load image.", Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
                 return;
             }
 
@@ -73,16 +78,13 @@ public class OCRProcessor {
                                 return;
                             }
 
-                            // Get existing schedules to avoid duplicates
                             Set<String> existingKeys = new HashSet<>();
                             for (Schedule s : scheduleManager.getAllSchedules()) {
                                 existingKeys.add(makeScheduleKey(s));
                             }
 
-                            // Try enhanced grid parsing first
                             List<Schedule> parsedGrid = parseGridTimetable(visionText, bitmap.getWidth(), bitmap.getHeight(), existingKeys);
 
-                            // Fallback to line-by-line if grid parsing yields few results
                             if (parsedGrid.size() < 3) {
                                 List<Schedule> parsedLines = parseScheduleTextLineByLine(recognizedText, fallbackDay, existingKeys);
                                 if (parsedLines.size() > parsedGrid.size()) {
@@ -95,14 +97,12 @@ public class OCRProcessor {
                                 return;
                             }
 
-                            // Add new schedules locally
                             int added = 0;
                             for (Schedule s : parsedGrid) {
                                 scheduleManager.addSchedule(s);
                                 added++;
                             }
 
-                            // ✅ Auto-sync new schedules to Firestore
                             if (added > 0) {
                                 Toast.makeText(context, "Saving schedules to Firestore...", Toast.LENGTH_SHORT).show();
                                 scheduleManager.syncToFirebase();
@@ -114,19 +114,25 @@ public class OCRProcessor {
                         } catch (Exception e) {
                             Log.e(TAG, "Parsing error", e);
                             Toast.makeText(context, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        } finally {
+                            // ✅ Always dismiss the dialog
+                            loadingDialog.dismiss();
                         }
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "OCR failed", e);
                         Toast.makeText(context, "OCR Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        loadingDialog.dismiss();
                     });
-
 
         } catch (Exception e) {
             Log.e(TAG, "Error processing image", e);
             Toast.makeText(context, "Error processing image: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            // ✅ Dismiss even on unexpected error
+            loadingDialog.dismiss();
         }
     }
+
 
     /**
      * Enhanced grid timetable parser

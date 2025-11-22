@@ -44,7 +44,7 @@
             android:id="@+id/tvCurrentDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Oct 25, 2025"
+            android:text="Oct 30, 2025"
             android:textSize="16sp"
             android:layout_below="@id/header_title"
             android:layout_centerHorizontal="true"
@@ -55,10 +55,22 @@
             android:id="@+id/tvCurrentDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Saturday"
+            android:text="Thursday"
             android:textSize="16sp"
             android:layout_below="@id/tvCurrentDate"
+            android:layout_centerHorizontal="true" />
+
+        <!-- Current Time -->
+        <TextView
+            android:id="@+id/tvCurrentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="03:14:22 PM"
+            android:textSize="15sp"
+
+            android:layout_below="@id/tvCurrentDay"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp"
             android:layout_marginBottom="8dp" />
 
         <!-- Day Selector Spinner -->
@@ -66,7 +78,7 @@
             android:id="@+id/spinnerDays"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvCurrentDay"
+            android:layout_below="@id/tvCurrentTime"
             android:spinnerMode="dropdown"
             android:layout_marginBottom="8dp" />
 
@@ -90,8 +102,6 @@
             android:orientation="horizontal"
             android:layout_margin="16dp">
 
-            <!-- Sync Now Button -->
-
             <ImageButton
                 android:id="@+id/btnSyncNow"
                 android:layout_width="60dp"
@@ -102,8 +112,6 @@
                 app:tint="@android:color/background_light"
                 android:contentDescription="Sync Firestore" />
 
-
-            <!-- Upload Schedule Image Button -->
             <ImageButton
                 android:id="@+id/btnUploadImage"
                 android:layout_width="60dp"
@@ -114,7 +122,6 @@
                 app:tint="@android:color/background_light"
                 android:contentDescription="Upload Schedule Image" />
 
-            <!-- Add Schedule Button -->
             <ImageButton
                 android:id="@+id/btnAdd"
                 android:layout_width="60dp"

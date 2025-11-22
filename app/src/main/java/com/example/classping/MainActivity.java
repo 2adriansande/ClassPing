@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -19,18 +20,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.classping.announcements.ViewAnnouncementsActivity;
+import com.example.classping.announcements.StudentViewAnnouncementsActivity;
+import com.example.classping.notifications.NotificationHelper;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 
-/**
- * Main activity for ClassPing.
- * Displays schedules, allows OCR upload, and handles sidebar navigation.
- */
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private TextView headerTitle;
+    private TextView headerTitle, tvCurrentDate, tvCurrentDay, tvCurrentTime;
     private Spinner spinnerDays;
     private RecyclerView recyclerView;
     private ScheduleManager manager;
@@ -42,6 +45,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageButton btnMenu;
 
     private static final int NOTIF_REQ_CODE = 1001;
+
+    // 🕒 Realtime Clock Handler
+    private final Handler timeHandler = new Handler();
+    private Runnable timeRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 🔥 Initialize Firebase
         FirebaseApp.initializeApp(this);
 
+        // 📨 Subscribe to "announcements" topic
+        FirebaseMessaging.getInstance().subscribeToTopic("announcements")
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        NotificationHelper.showAnnouncementNotification(
+                                this,
+                                "Subscribed",
+                                "You’ll now receive announcement updates."
+                        );
+                    }
+                });
+
         // 🎨 Initialize Drawer and UI elements
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
@@ -72,7 +91,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ImageButton btnAdd = findViewById(R.id.btnAdd);
         ImageButton btnUpload = findViewById(R.id.btnUploadImage);
 
-        // 🧠 Schedule Manager + Adapter
+        // 📅 Date & Time Views
+        tvCurrentDate = findViewById(R.id.tvCurrentDate);
+        tvCurrentDay = findViewById(R.id.tvCurrentDay);
+        tvCurrentTime = findViewById(R.id.tvCurrentTime);
+
+        // 🕒 Initialize date/day and realtime clock
+        updateDateAndDay();
+        startRealtimeClock();
+
         manager = new ScheduleManager(this);
         adapter = new ScheduleAdapter(manager.getAllSchedules(), manager, this::refreshScheduleList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -80,12 +107,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         headerTitle.setText("ClassPing");
 
-        // ➕ Add Schedule manually
         btnAdd.setOnClickListener(v ->
                 new AddScheduleDialog(MainActivity.this, manager, this::refreshScheduleList).show()
         );
 
-        // 📸 OCR Image picker
         pickImageLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), (Uri uri) -> {
             if (uri != null) {
                 String defaultDay = spinnerDays.getSelectedItem() != null
@@ -99,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         btnUpload.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
 
-        // 📅 Spinner (Days of Week)
+        // 📅 Spinner setup
         String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         spinnerDays.setAdapter(new android.widget.ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, days));
@@ -112,13 +137,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+            }
         });
     }
 
-    /**
-     * Refresh RecyclerView when schedule data changes.
-     */
+    // 🔁 Refresh RecyclerView for selected day
     private void refreshScheduleList() {
         String selectedDay = spinnerDays.getSelectedItem() != null
                 ? spinnerDays.getSelectedItem().toString()
@@ -126,20 +150,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter.updateSchedules(manager.getSchedulesForDay(selectedDay));
     }
 
-    /**
-     * Handle sidebar navigation selections.
-     */
+    // 📅 Update Date and Day
+    private void updateDateAndDay() {
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+
+        tvCurrentDate.setText(dateFormat.format(now));
+        tvCurrentDay.setText(dayFormat.format(now));
+    }
+
+    // 🕒 Start real-time clock updating every second
+    private void startRealtimeClock() {
+        timeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault());
+                String currentTime = timeFormat.format(new Date());
+                tvCurrentTime.setText(currentTime);
+                timeHandler.postDelayed(this, 1000);
+            }
+        };
+        timeHandler.post(timeRunnable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (timeHandler != null && timeRunnable != null) {
+            timeHandler.removeCallbacks(timeRunnable);
+        }
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
             startActivity(new Intent(this, StudentProfileActivity.class));
-        }
-        else if (id == R.id.nav_announcements) {
-            startActivity(new Intent(this, ViewAnnouncementsActivity.class));
-        }
-        else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_announcements) {
+            startActivity(new Intent(this, StudentViewAnnouncementsActivity.class));
+        } else if (id == R.id.nav_logout) {
             drawerLayout.closeDrawers();
             drawerLayout.postDelayed(() -> {
                 FirebaseAuth.getInstance().signOut();
@@ -154,25 +205,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    /**
-     * Refresh schedules when returning to activity.
-     */
     @Override
     protected void onResume() {
         super.onResume();
         refreshScheduleList();
-    }
-
-    /**
-     * Handle permission result.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == NOTIF_REQ_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
-            }
-        }
     }
 }
