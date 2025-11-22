@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">ScheduleApp</string>
+    <string-array name="days_array">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
+    <string-array name="reminder_options">
+        <item>5 minutes before</item>
+        <item>10 minutes before</item>
+        <item>30 minutes before</item>
+    </string-array>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="Logo_name">ClassPing</string>
+    <string name="Logo_description"> Smart app that instantly turns your class schedule into an interactive planner with reminders, so you never miss a class again!</string>
+</resources>

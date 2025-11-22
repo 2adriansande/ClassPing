@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:padding="24dp">
+
+    <!-- Scrollable content -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btnLogout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Admin Dashboard"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_marginBottom="32dp" />
+
+            <Button
+                android:id="@+id/btnManageAnnouncements"
+                style="@style/DashboardButton"
+                android:text="Manage Announcements"
+                android:layout_marginBottom="16dp" />
+
+            <Button
+                android:id="@+id/btnManageSchedule"
+                style="@style/DashboardButton"
+                android:text="Manage Schedule"
+                android:layout_marginBottom="16dp" />
+
+            <Button
+                android:id="@+id/btnManageStudents"
+                style="@style/DashboardButton"
+                android:text="Manage Students"
+                android:layout_marginBottom="16dp" />
+            <Button
+                android:id="@+id/btnManageProfessors"
+                style="@style/DashboardButton"
+                android:text="Manage Professors"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Logout button fixed at the bottom -->
+    <Button
+        android:id="@+id/btnLogout"
+        style="@style/DashboardButton"
+        android:text="Logout"
+        android:backgroundTint="@color/cardview_dark_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

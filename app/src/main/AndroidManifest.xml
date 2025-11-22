@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ✅ Permissions -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/Logo_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ClassPing"
+        tools:targetApi="33">
+
+        <!-- 🔔 Reminder Notification Receiver -->
+        <receiver android:name=".ReminderReceiver" />
+
+        <!-- 🏁 Splash (App Entry Point) -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 🚀 Landing Page -->
+        <activity
+            android:name=".LandingPage"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 🔐 Login -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 📝 Register -->
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 🧭 Student Dashboard -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.ClassPing" />
+
+        <activity
+            android:name=".StudentProfileActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 👨‍🏫 Professor Dashboard -->
+        <activity
+            android:name=".ProfessorDashboardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ClassPing" />
+
+        <activity
+            android:name=".ProfessorAnnouncementActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 📚 Manage Classes (New Activity) -->
+        <activity
+            android:name=".ManageClassesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 👩‍💼 Admin Dashboard -->
+        <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+        <activity
+            android:name=".ManageScheduleActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 📢 Announcement Creation -->
+        <activity
+            android:name=".announcements.AnnouncementActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 👀 Student View Announcements -->
+        <activity
+            android:name=".announcements.StudentViewAnnouncementsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClassPing" />
+
+        <!-- 🔔 Firebase Messaging Service -->
+        <service
+            android:name=".notifications.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+    </application>
+</manifest>

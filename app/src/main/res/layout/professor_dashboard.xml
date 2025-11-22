@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/profDrawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 🟦 MAIN CONTENT AREA -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <!-- 🟩 Top Bar -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/profToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/blue_selected"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title="Professor Dashboard"
+            app:titleTextColor="@android:color/white" />
+
+        <!-- 🟨 Header with Date, Day, and Time -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="@color/white">
+
+            <!-- App Header Title -->
+            <TextView
+                android:id="@+id/header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ClassPing"
+                android:fontFamily="@font/revalia"
+                android:textColor="@color/dark_gold"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp" />
+
+            <!-- Current Date -->
+            <TextView
+                android:id="@+id/tvCurrentDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Oct 30, 2025"
+                android:textSize="16sp"
+                android:layout_below="@id/header_title"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp" />
+
+            <!-- Current Day -->
+            <TextView
+                android:id="@+id/tvCurrentDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thursday"
+                android:textSize="16sp"
+                android:layout_below="@id/tvCurrentDate"
+                android:layout_centerHorizontal="true" />
+
+            <!-- Current Time -->
+            <TextView
+                android:id="@+id/tvCurrentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="03:14:22 PM"
+                android:textSize="15sp"
+                android:layout_below="@id/tvCurrentDay"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp" />
+        </RelativeLayout>
+
+        <!-- 🟩 Scrollable Content -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Announcements -->
+                <Button
+                    android:id="@+id/btnMakeAnnouncement"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Make Announcement"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/rounded_button"
+                    android:textColor="@android:color/white" />
+
+
+
+                <!-- Upcoming Classes -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upcoming Classes"
+                    android:textColor="#5264BF"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:id="@+id/layoutUpcomingClasses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/rounded_card"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/tvNoClasses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No upcoming classes."
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- 🟦 SIDEBAR (Navigation Drawer) -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/profNavView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/white"
+        app:menu="@menu/menu_professor_drawer" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
